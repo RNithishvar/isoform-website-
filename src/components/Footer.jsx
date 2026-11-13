@@ -1,70 +1,84 @@
-import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
-import { Logo } from "./Logo.jsx";
-import { Container } from "./Section.jsx";
-import { contact, navLinks, services } from "../data/site.js";
+import { Link } from 'react-router';
+import { services } from '../data/services.js';
+import { site, studioLinks } from '../data/site.js';
+import { Mark } from './Logo.jsx';
+
+const footerLink = 'text-muted transition-colors hover:text-white';
 
 export default function Footer() {
   return (
-    <footer data-nav="dark" className="relative overflow-hidden bg-ink-950 pt-20 pb-10 text-white">
-      <div aria-hidden className="pointer-events-none absolute -bottom-40 left-1/2 h-[420px] w-[1100px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(109,59,255,0.35),transparent)]" />
-      <Container className="relative">
-        <div className="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr]">
-          <div className="flex flex-col gap-6">
-            <Logo />
-            <p className="max-w-[340px] text-[15px] leading-[1.6] text-mist">
-              Websites, social media, video, automation and branding for businesses that want to look as good online as they are in person.
-            </p>
+    <footer className="relative isolate overflow-hidden border-t border-line">
+      {/* violet light rising from the bottom edge */}
+      <div
+        className="glow -bottom-[34rem] left-1/2 -z-10 h-[60rem] w-[150rem] max-w-[260vw] -translate-x-1/2 opacity-90"
+        aria-hidden="true"
+      />
+
+      <div className="wrap pt-20 md:pt-28">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-6">
+            <div className="flex items-center gap-4">
+              <Mark className="h-[3.6rem] w-auto flex-none text-brand-400" />
+              <div className="w-[13.25rem] sm:w-[17rem]">
+                <span role="img" aria-label={site.name} className="wordmark block w-full text-white" />
+                <p className="mt-3 w-full whitespace-nowrap text-[0.625rem] font-medium uppercase tracking-[0.08em] text-muted [text-align-last:justify] sm:text-[0.6875rem] sm:tracking-[0.16em]">
+                  {site.tagline}
+                </p>
+              </div>
+            </div>
+            <p className="type-lead mt-9 max-w-md text-muted">{site.description}</p>
             <a
-              href={`mailto:${contact.email}`}
-              className="group inline-flex w-fit items-center gap-1.5 text-[16px] font-medium text-white transition-colors hover:text-lilac"
+              href={`mailto:${site.email}`}
+              className="text-link mt-8 inline-block break-all text-[clamp(1.3rem,2.7vw,2.25rem)] font-[450] leading-tight tracking-[-0.03em] text-white"
             >
-              {contact.email}
-              <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              {site.email}
             </a>
           </div>
-          <div>
-            <h2 className="mb-4 font-mono text-[11px] tracking-[0.18em] text-brand-soft uppercase">Services</h2>
-            <ul className="flex flex-col gap-2.5">
-              {services.map((s) => (
-                <li key={s.slug}>
-                  <Link to={`/services/${s.slug}`} className="text-[15px] text-mist transition-colors hover:text-white">
-                    {s.name}
+
+          <nav aria-labelledby="footer-services" className="lg:col-span-3 lg:col-start-8">
+            <h2 id="footer-services" className="label-caps text-faint">
+              Services
+            </h2>
+            <ul className="mt-6 space-y-3">
+              {services.map((service) => (
+                <li key={service.slug}>
+                  <Link to={`/services/${service.slug}`} className={footerLink}>
+                    {service.name}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
-          <div>
-            <h2 className="mb-4 font-mono text-[11px] tracking-[0.18em] text-brand-soft uppercase">Studio</h2>
-            <ul className="flex flex-col gap-2.5">
-              <li>
-                <Link to="/" className="text-[15px] text-mist transition-colors hover:text-white">
-                  Home
-                </Link>
-              </li>
-              {navLinks.map((l) => (
-                <li key={l.id}>
-                  <Link to={l.to} className="text-[15px] text-mist transition-colors hover:text-white">
-                    {l.label}
+          </nav>
+
+          <nav aria-labelledby="footer-studio" className="lg:col-span-2">
+            <h2 id="footer-studio" className="label-caps text-faint">
+              Studio
+            </h2>
+            <ul className="mt-6 space-y-3">
+              {studioLinks.map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className={footerLink}>
+                    {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         </div>
 
-        <div aria-hidden className="mt-16 overflow-hidden">
-          <p className="bg-gradient-to-b from-white/[0.12] to-transparent bg-clip-text text-center font-brand text-[12.5vw] leading-[0.9] tracking-[0.04em] sm:tracking-[0.08em] text-transparent select-none lg:text-[180px]">
-            ISOFORM
+        <div className="mt-20 md:mt-28" aria-hidden="true">
+          <span className="footer-wordmark" />
+        </div>
+
+        <div className="mt-10 flex flex-col gap-3 border-t border-line py-7 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {site.year} {site.name}. All rights reserved.
           </p>
+          <Link to="/privacy" className="text-link hover:text-white">
+            Privacy policy
+          </Link>
         </div>
-
-        <div className="mt-6 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-[13px] text-dim sm:flex-row">
-          <span>© {new Date().getFullYear()} Isoform. All rights reserved.</span>
-          <span className="font-mono tracking-[0.18em] uppercase">Digital · Design · Experience</span>
-        </div>
-      </Container>
+      </div>
     </footer>
   );
 }

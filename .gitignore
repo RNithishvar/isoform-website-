@@ -1,15 +1,13 @@
-node_modules
-dist
-.DS_Store
-*.local
+node_modules/
+dist/
+dist-ssr/
+.env
+.env.*
+!.env.example
+.vercel/
+*.log
 
-# editor / tool settings
+# local only
 .claude/
-
-# reference and source material, not part of the site
-# (copies used by the site live in public/)
-hero section.jpg
-colour and website theme.jpg
-socialmedia client-*.jpeg
-isoform_logo.jpeg
-*.mp4
+design inspo.mp4
+/*.webp

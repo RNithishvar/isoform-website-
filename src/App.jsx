@@ -1,77 +1,53 @@
-import { useEffect, useLayoutEffect } from "react";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx";
-import Home from "./pages/Home.jsx";
-import ServicesPage from "./pages/ServicesPage.jsx";
-import ServicePage from "./pages/ServicePage.jsx";
-import WorkPage from "./pages/WorkPage.jsx";
-import AboutPage from "./pages/AboutPage.jsx";
-import ProcessPage from "./pages/ProcessPage.jsx";
-import ContactPage from "./pages/ContactPage.jsx";
-import { SmoothScroll, useLenis } from "./lib/scroll.jsx";
-import { NavVisibilityProvider } from "./lib/ui.jsx";
-import { Container } from "./components/Section.jsx";
-
-const titles = {
-  "/": "Isoform — Websites, social media, video & automation",
-  "/services": "Services — Isoform",
-  "/work": "Our work — Isoform",
-  "/about": "About — Isoform",
-  "/process": "How we work — Isoform",
-  "/contact": "Contact — Isoform",
-};
-
-// Top of page and a fresh title on every route change.
-function RouteEffects() {
-  const { pathname } = useLocation();
-  const lenis = useLenis();
-
-  useLayoutEffect(() => {
-    if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
-  }, []);
-
-  useEffect(() => {
-    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
-    window.scrollTo(0, 0);
-    document.title = titles[pathname] ?? "Isoform — Digital · Design · Experience";
-  }, [pathname, lenis]);
-
-  return null;
-}
-
-function NotFound() {
-  return (
-    <main data-nav="light" className="flex min-h-svh items-center bg-snow pt-24">
-      <Container className="flex flex-col items-start gap-5">
-        <span className="eyebrow text-brand">404</span>
-        <h1 className="text-[44px] leading-[1.05] font-medium tracking-[-0.03em] text-coal md:text-[64px]">This page doesn't exist.</h1>
-        <Link to="/" className="text-[16px] font-medium text-brand hover:text-brand-deep">
-          Back to the homepage →
-        </Link>
-      </Container>
-    </main>
-  );
-}
+import { useMemo, useRef, useState } from 'react';
+import { Route, Routes, useLocation } from 'react-router';
+import Footer from './components/Footer.jsx';
+import Header from './components/Header.jsx';
+import RouteEffects from './components/RouteEffects.jsx';
+import { IntroContext, markNavigated, shouldShowIntro } from './lib/intro.jsx';
+import About from './pages/About.jsx';
+import Contact from './pages/Contact.jsx';
+import Home from './pages/Home.jsx';
+import NotFound from './pages/NotFound.jsx';
+import Privacy from './pages/Privacy.jsx';
+import Process from './pages/Process.jsx';
+import ServiceDetail from './pages/ServiceDetail.jsx';
+import Services from './pages/Services.jsx';
+import Work from './pages/Work.jsx';
 
 export default function App() {
+  const location = useLocation();
+
+  // Note the first in-app navigation, so the home intro only plays on arrival.
+  const lastKey = useRef(location.key);
+  if (lastKey.current !== location.key) {
+    lastKey.current = location.key;
+    markNavigated();
+  }
+
+  const [introActive, setIntroActive] = useState(() => location.pathname === '/' && shouldShowIntro());
+  const intro = useMemo(() => ({ introActive, setIntroActive }), [introActive]);
+
   return (
-    <SmoothScroll>
-      <NavVisibilityProvider>
-        <RouteEffects />
-        <Navbar />
+    <IntroContext.Provider value={intro}>
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <RouteEffects />
+      <Header />
+      <main id="main" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/services/:slug" element={<ServicePage />} />
-          <Route path="/work" element={<WorkPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/process" element={<ProcessPage />} />
-          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/services/:slug" element={<ServiceDetail />} />
+          <Route path="/work" element={<Work />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/process" element={<Process />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Footer />
-      </NavVisibilityProvider>
-    </SmoothScroll>
+      </main>
+      <Footer />
+    </IntroContext.Provider>
   );
 }

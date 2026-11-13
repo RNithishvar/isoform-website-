@@ -1,43 +1,39 @@
-// The Isoform "F" mark, traced from the logo: a full-height bar plus three slanted strokes.
-export function FMark({ className = "", title }) {
+import { site } from '../data/site.js';
+
+// The ISOFORM mark, redrawn as vector from the logo artwork.
+export function Mark({ className = '' }) {
   return (
-    <svg
-      viewBox="0 0 539 684"
-      fill="currentColor"
-      className={className}
-      role={title ? "img" : undefined}
-      aria-hidden={title ? undefined : true}
-      aria-label={title}
-    >
-      <rect x="0" y="0" width="126" height="684" />
-      <polygon points="166,0 539,0 466,134 166,134" />
-      <polygon points="166,216 421,216 348,350 166,350" />
-      <polygon points="166,431 302,431 166,684" />
+    <svg viewBox="0 0 540 684" className={className} fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M0 0h125v684H0zM167 0h372l-72.4 133H167zM167 215h254.9l-73.5 135H167zM167 431h137.2L167 684z" />
     </svg>
   );
 }
 
-export function Logo({ tone = "light", className = "", markClassName = "h-8 md:h-9" }) {
+// Mark + wordmark. `tone="light"` is for dark backgrounds, `tone="dark"` for
+// light ones (the logo's original colours). The wordmark is the traced logo
+// lettering, drawn with a CSS mask so it can take any colour.
+export function Lockup({ tone = 'light', tagline = false, size = 'md', className = '' }) {
+  const light = tone === 'light';
+  const sizes = {
+    md: { mark: 'h-[1.9rem]', word: 'w-[6.9rem]', gap: 'gap-3' },
+    lg: { mark: 'h-[3.4rem]', word: 'w-[15.5rem]', gap: 'gap-4' },
+  }[size];
+
   return (
-    <span className={`flex items-center gap-3 ${className}`}>
-      <FMark className={`w-auto shrink-0 text-brand ${markClassName}`} />
-      <span
-        className={`font-brand text-[14px] leading-none tracking-[0.3em] md:text-[16px] ${
-          tone === "light" ? "text-white" : "text-ink-950"
-        }`}
-      >
-        ISOFORM
+    <span className={`inline-flex items-center ${sizes.gap} ${className}`}>
+      <Mark className={`${sizes.mark} w-auto flex-none ${light ? 'text-brand-400' : 'text-brand'}`} />
+      <span className="flex flex-col gap-[0.6rem]">
+        <span role="img" aria-label={site.name} className={`wordmark ${sizes.word} ${light ? 'text-white' : 'text-ink'}`} />
+        {tagline ? (
+          <span
+            className={`whitespace-nowrap text-[0.6875rem] font-medium uppercase leading-none tracking-[0.3em] ${
+              light ? 'text-muted' : 'text-ink/70'
+            }`}
+          >
+            {site.tagline}
+          </span>
+        ) : null}
       </span>
     </span>
-  );
-}
-
-export function InstagramIcon({ className = "size-4" }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
-    </svg>
   );
 }
